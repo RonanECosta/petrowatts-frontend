@@ -1,0 +1,221 @@
+/* CORES */
+:root {
+    --verde-destaque: #2e7d32;
+    /* destaque */
+    --verde-claro: #e8f5e9;
+    /* Fundo suave */
+    --verde-escuro: #1b5e20;
+    /* Texto principal e títulos */
+    --cinza-fundo: #f4f7f5;
+    /* Cor de fundo */
+    --branco: #ffffff;
+    --texto-escuro: #333333;
+    --erro-vermelho: #d32f2f;
+    --borda: #c8e6c9;
+    /* Borda esverdeada suave */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--cinza-fundo);
+    color: var(--texto-escuro);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+    background: linear-gradient(135deg, var(--branco) 0%, #f1f8e9 100%);
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-left: 6px solid var(--verde-destaque);
+}
+
+header .title h3 {
+    color: var(--verde-escuro);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+header .icon img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.newCar {
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+    background-color: var(--branco);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.linha {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    flex-wrap: wrap;
+    /* Garante responsividade em telas menores */
+}
+
+.newCar input,
+.newCar select {
+    padding: 12px 15px;
+    border: 1px solid var(--borda);
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #fafafa;
+    color: var(--texto-escuro);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.newCar input:focus,
+.newCar select:focus {
+    border-color: var(--verde-destaque);
+    background-color: var(--branco);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+.campo-largo {
+    flex: 50;
+    min-width: 200px;
+}
+
+.campo-md {
+    flex: 30;
+    min-width: 150px;
+}
+
+.campo-p {
+    flex: 20;
+    min-width: 100px;
+}
+
+.campo-pp {
+    flex: 5;
+    min-width: 80px;
+}
+
+/* Botão Adicionar */
+.addBtn {
+    background-color: var(--verde-destaque);
+    color: var(--branco);
+    border: none;
+    padding: 12px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 3px 6px rgba(46, 125, 50, 0.2);
+}
+
+.addBtn:hover {
+    background-color: var(--verde-escuro);
+}
+
+.addBtn:active {
+    transform: scale(0.98);
+}
+
+.errors {
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+}
+
+.erro-mensagem {
+    background-color: #ffebee;
+    color: var(--erro-vermelho);
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    border-left: 4px solid var(--erro-vermelho);
+    display: none;
+    /* Controlado dinamicamente pelo JS */
+    font-weight: 500;
+}
+
+.items {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--branco);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    /* Garante que os cantos arredondados apareçam na tabela */
+}
+
+#myTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+#myTable th {
+    background-color: var(--verde-destaque);
+    color: var(--branco);
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+#myTable td {
+    padding: 14px 15px;
+    border-bottom: 1px solid #edf2ee;
+    font-size: 14px;
+    color: var(--texto-escuro);
+}
+
+/* Efeito zebrado nas linhas da tabela */
+#myTable tr:nth-child(even) {
+    background-color: #f9fbf9;
+}
+
+#myTable tr:hover {
+    background-color: #f1f8e9;
+}
+
+#myTable th:last-child,
+#myTable td:last-child {
+    text-align: center;
+    width: 50px;
+}
+
+#myTable td img {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#myTable td img:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+/* Esconde as setas nativas dos campos numéricos */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}

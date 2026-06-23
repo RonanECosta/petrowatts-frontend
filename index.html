@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Projeto</title>
+</head>
+
+<body>
+    <!-- Cabeçalho de informações do sistema -->
+    <header>
+        <div class="title">
+            <h3>Investimento e Economia<br>
+                em veículos elétricos x combustão</h3>
+        </div>
+        <div class="icon">
+            <img src="./img/favicon.ico" alt="icon">
+        </div>
+    </header>
+
+    <!-- Opções para adicionar o veículo -->
+    <section class="newCar">
+        <div class="linha">
+            <input class="campo-largo" type="text" id="nome" placeholder="Nome completo" maxlength="50">
+            <select id="uf">
+                <option class="campo-pp" value="" disabled selected>UF</option>
+            </select>
+        </div>
+        <div class="linha">
+            <select class="campo-md" id="marca">
+                <option value="" disabled selected>Marca</option>
+            </select>
+            <select class="campo-md" id="modelo" disabled>
+                <option value="" disabled selected>Modelo</option>
+            </select>
+            <select class="campo-md" id="anoFabricacao" disabled>
+                <option value="" disabled selected>Ano</option>
+            </select>
+            <input class="campo-p" type="number" id="rodagemMensal" placeholder="Km mensal">
+        </div>
+        <div class="linha">
+            <button onclick="newCar()" class="addBtn">Adicionar</button>
+        </div>
+    </section>
+
+    <section class="errors">
+        <div id="erroAno" class="erro-mensagem">O ano deve ser um número inteiro entre 2014 e 2026.</div>
+    </section>
+
+    <!-- Tabela com veículos existentes -->
+    <section class="items">
+        <table id="myTable">
+            <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>Valor</th>
+                <th><img src="https://cdn-icons-png.flaticon.com/512/126/126468.png" width="15px" height="15px"></th>
+            </tr>
+        </table>
+    </section>
+
+    <script src="scripts.js"></script>
+</body>
+
+</html>
