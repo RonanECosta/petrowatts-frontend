@@ -3,28 +3,23 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="styles.css">
-
-    <title>Projeto</title>
+    <title>Petrowatt</title>
 </head>
 
 <body>
-    <!-- Cabeçalho de informações do sistema -->
     <header>
         <div class="title">
-            <h3>Investimento e Economia<br>
-                em veículos elétricos x combustão</h3>
+            <h2>Investimento e Economia: veículos elétricos x combustão</h2>
         </div>
         <div class="icon">
             <img src="./img/favicon.ico" alt="icon">
         </div>
     </header>
 
-    <!-- Opções para adicionar o veículo -->
     <section class="newCar">
+        <h2>Cadastro inicial</h2>
+
         <div class="linha">
             <input class="campo-largo" type="text" id="nome" placeholder="Nome completo" maxlength="50">
             <select id="uf">
@@ -52,16 +47,18 @@
         <div id="erroAno" class="erro-mensagem">O ano deve ser um número inteiro entre 2014 e 2026.</div>
     </section>
 
-    <!-- Tabela com veículos existentes -->
-    <section class="items">
-        <table id="myTable">
-            <tr>
-                <th>Nome</th>
-                <th>Quantidade</th>
-                <th>Valor</th>
-                <th><img src="https://cdn-icons-png.flaticon.com/512/126/126468.png" width="15px" height="15px"></th>
-            </tr>
-        </table>
+    <section class="dados">
+        <div id="dadosCadastrados" class="card-resultado">
+            <h3>Seus Dados Cadastrados</h3>
+            <p><strong>Nome:</strong> <span id="resNome">-</span></p>
+            <p><strong>UF:</strong> <span id="resUf">-</span></p>
+
+            <h3>Dados do Veículo</h3>
+            <p><strong>Marca:</strong> <span id="resMarca">-</span></p>
+            <p><strong>Modelo:</strong> <span id="resModelo">-</span></p>
+            <p><strong>Ano:</strong> <span id="resAno">-</span></p>
+            <p><strong>Rodagem Mensal:</strong> <span id="resKm">-</span> km</p>
+        </div>
     </section>
 
     <script src="scripts.js"></script>

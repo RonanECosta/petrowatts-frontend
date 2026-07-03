@@ -44,14 +44,11 @@ header {
 
 header .title h3 {
     color: var(--verde-escuro);
-    font-size: 1.4rem;
-    font-weight: 700;
 }
 
 header .icon img {
     height: 60px;
     width: auto;
-    object-fit: contain;
 }
 
 .newCar {
@@ -69,16 +66,14 @@ header .icon img {
 .linha {
     display: flex;
     gap: 15px;
-    width: 100%;
     flex-wrap: wrap;
-    /* Garante responsividade em telas menores */
 }
 
 .newCar input,
 .newCar select {
-    padding: 12px 15px;
+    padding: 10px 11px;
     border: 1px solid var(--borda);
-    border-radius: 6px;
+    border-radius: 4px;
     font-size: 14px;
     background-color: #fafafa;
     color: var(--texto-escuro);
@@ -152,61 +147,14 @@ header .icon img {
     font-weight: 500;
 }
 
-.items {
+.dados {
     max-width: 800px;
     margin: 0 auto;
+    padding: 10px 11px;
     background-color: var(--branco);
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    /* Garante que os cantos arredondados apareçam na tabela */
-}
-
-#myTable {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-#myTable th {
-    background-color: var(--verde-destaque);
-    color: var(--branco);
-    padding: 15px;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-#myTable td {
-    padding: 14px 15px;
-    border-bottom: 1px solid #edf2ee;
-    font-size: 14px;
-    color: var(--texto-escuro);
-}
-
-/* Efeito zebrado nas linhas da tabela */
-#myTable tr:nth-child(even) {
-    background-color: #f9fbf9;
-}
-
-#myTable tr:hover {
-    background-color: #f1f8e9;
-}
-
-#myTable th:last-child,
-#myTable td:last-child {
-    text-align: center;
-    width: 50px;
-}
-
-#myTable td img {
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-#myTable td img:hover {
-    opacity: 1;
-    transform: scale(1.15);
 }
 
 /* Esconde as setas nativas dos campos numéricos */
@@ -214,8 +162,4 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
-
-input[type=number] {
-    -moz-appearance: textfield;
 }
