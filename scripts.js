@@ -121,8 +121,8 @@ const deleteItem = (nomeItem) => {
         .catch((error) => console.error('Error:', error));
 };
 
-// Função chamada pelo clique do botão "Adicionar" (mapeado como newCar no HTML)
-const newCar = () => {
+// Função chamada pelo clique do botão "Cadastrar" (mapeado como newCadastro no HTML)
+const newCadastro = () => {
     let nome = document.getElementById("nome").value;
     let uf = document.getElementById("uf").value;
     let rodagem = document.getElementById("rodagemMensal").value;
@@ -133,20 +133,26 @@ const newCar = () => {
     let idFabricante = comboMarca.value; // Captura o ID numérico (ex: 2)
     let nomeMarca = comboMarca.options[comboMarca.selectedIndex]?.text || ''; // Captura o texto (ex: "Fiat")
 
-    // Validação robusta de todos os campos obrigatórios na tela
+    // Validação
     if (!nome.trim() || !uf || !idFabricante || !modelo || !ano || !rodagem) {
         alert("Por favor, preencha todos os campos obrigatórios antes de continuar!");
         return;
     }
 
-    // Na tabela visual do HTML, exibiremos o Nome do Usuário, o Modelo do Carro e a Rodagem
     insertList(nome, `${nomeMarca} ${modelo} (${ano})`, `${rodagem} Km`);
 
-    // Dispara o envio completo para o relacionamento das tabelas no backend
     postItem(nome, uf, idFabricante, modelo, ano, rodagem);
 
     alert("Cadastro e vínculo realizados com sucesso!");
     resetaFormulario();
+
+    //popula campos na index com os dados recém-cadastrados
+    document.getElementById('resNome').innerText = nome;
+    document.getElementById('resUf').innerText = uf;
+    document.getElementById('resMarca').innerText = nomeMarca;
+    document.getElementById('resModelo').innerText = modelo;
+    document.getElementById('resAno').innerText = ano;
+    document.getElementById('resKm').innerText = rodagem;
 };
 
 const postItem = async (nome, estado, idFabricante, modelo, ano, kmMensal) => {
