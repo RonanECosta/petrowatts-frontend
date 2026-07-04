@@ -3,8 +3,7 @@ const API_BASE_URL = 'http://127.0.0.1:5000';
 // Inicializa a página
 document.addEventListener('DOMContentLoaded', () => {
     carregarUfs();
-    carregarMarcas();
-    getList();
+    carregarFabricantes();
 });
 
 // Alimenta o combo de UFs dinamicamente
@@ -26,26 +25,26 @@ const carregarUfs = () => {
 };
 
 // Busca todas as marcas (fabricantes) do banco de dados
-const carregarMarcas = async () => {
-    const selectMarca = document.getElementById('marca');
+const carregarFabricantes = async () => {
+    const selectFabricante = document.getElementById('fabricante');
 
     try {
-        const response = await fetch(`${API_BASE_URL}/fabricantes`);
-        const marcas = await response.json(); // Espera uma lista de [{id: 1, fabricante: 'Toyota'}, ...]
+        const response = await fetch(`${API_BASE_URL}/fabricantes_combustao`);
+        const fabricantes = await response.json(); // Espera uma lista de [{id: 1, fabricante: 'Toyota'}, ...]
 
-        marcas.forEach(marca => {
+        fabricantes.forEach(fabricante => {
             const option = document.createElement('option');
-            option.value = marca.id;
-            option.textContent = marca.fabricante;
-            selectMarca.appendChild(option);
+            option.value = fabricante.id;
+            option.textContent = fabricante.fabricante;
+            selectFabricante.appendChild(option);
         });
     } catch (error) {
-        console.error('Erro ao carregar marcas:', error);
+        console.error('Erro ao carregar fabricantes:', error);
     }
 };
 
-// carrega Modelos conforme a marca selecioanda
-document.getElementById('marca').addEventListener('change', async (e) => {
+// carrega Modelos conforme a fabricante selecionada
+document.getElementById('fabricante').addEventListener('change', async (e) => {
     const idFabricante = e.target.value;
     const selectModelo = document.getElementById('modelo');
     const selectAno = document.getElementById('anoFabricacao');
@@ -98,74 +97,88 @@ document.getElementById('modelo').addEventListener('change', async (e) => {
     }
 });
 
-
-// Obtém a lista de veículos já cadastrados para renderizar na tabela
-const getList = async () => {
-    let url = `${API_BASE_URL}/veiculo-combustao`;
-    fetch(url, { method: 'get' })
-        .then((response) => response.json())
-        .then((data) => {
-            // Remove dados residuais e mapeia as propriedades vindas do banco
-            if (data && data.veiculos) {
-                data.veiculos.forEach(item => insertList(item.nome, item.quantidade, item.valor));
-            }
-        })
-        .catch((error) => console.error('Error:', error));
-};
-
-// Deleta um item da lista do servidor via requisição DELETE
-const deleteItem = (nomeItem) => {
-    let url = `${API_BASE_URL}/veiculo-combustao?nome=${encodeURIComponent(nomeItem)}`;
-    fetch(url, { method: 'delete' })
-        .then((response) => response.json())
-        .catch((error) => console.error('Error:', error));
-};
-
-// Função chamada pelo clique do botão "Cadastrar" (mapeado como newCadastro no HTML)
-const newCadastro = () => {
+// Função chamada pelo clique do botão "Cadastrar" (mapeado como novoCadastro no HTML)
+const novoCadastro = async () => {
+    let cpf = document.getElementById("cpf").value;
     let nome = document.getElementById("nome").value;
     let uf = document.getElementById("uf").value;
     let rodagem = document.getElementById("rodagemMensal").value;
     let modelo = document.getElementById("modelo").value;
     let ano = document.getElementById("anoFabricacao").value;
 
-    let comboMarca = document.getElementById("marca");
-    let idFabricante = comboMarca.value; // Captura o ID numérico (ex: 2)
-    let nomeMarca = comboMarca.options[comboMarca.selectedIndex]?.text || ''; // Captura o texto (ex: "Fiat")
+    let comboFabricante = document.getElementById("fabricante");
+    let idFabricante = comboFabricante.value; // Captura o ID numérico (ex: 2)
+    let fabricante = comboFabricante.options[comboFabricante.selectedIndex]?.text || ''; // Captura o texto (ex: "Fiat")
 
     // Validação
-    if (!nome.trim() || !uf || !idFabricante || !modelo || !ano || !rodagem) {
+    if (!cpf.trim() || !nome.trim() || !uf || !idFabricante || !modelo || !ano || !rodagem) {
         alert("Por favor, preencha todos os campos obrigatórios antes de continuar!");
         return;
     }
 
-    insertList(nome, `${nomeMarca} ${modelo} (${ano})`, `${rodagem} Km`);
+    const response = await postItem(cpf, nome, uf, idFabricante, modelo, ano, rodagem);
 
-    postItem(nome, uf, idFabricante, modelo, ano, rodagem);
+    console.info(`Resposta do servidor para o cadastro de CPF ${cpf}: Status ${response.status}`);
+    if (response.status != 200) {
+        alert("Erro no cadastro. Verifique os dados e tente novamente.");
+        return;
+    }
 
     alert("Cadastro e vínculo realizados com sucesso!");
-    resetaFormulario();
+
+    const data = await response.json();
 
     //popula campos na index com os dados recém-cadastrados
+    document.getElementById('resId').innerText = data.id_usuario;
     document.getElementById('resNome').innerText = nome;
     document.getElementById('resUf').innerText = uf;
-    document.getElementById('resMarca').innerText = nomeMarca;
+    document.getElementById('resFabricante').innerText = fabricante;
     document.getElementById('resModelo').innerText = modelo;
-    document.getElementById('resAno').innerText = ano;
-    document.getElementById('resKm').innerText = rodagem;
+    document.getElementById('resAno').innerText = parseInt(ano, 10);
+    document.getElementById('resKm').innerText = parseInt(rodagem, 10);
+
+    //resetaFormulario();
 };
 
-const postItem = async (nome, estado, idFabricante, modelo, ano, kmMensal) => {
+// Função chamada pelo clique do botão "Buscar" (mapeado como novaConsulta no HTML)
+const novaConsulta = async () => {
+    let cpf = document.getElementById("cpf").value;
+
+    if (!cpf.trim()) {
+        alert("Por favor, preencha o CPF para efetuar a consulta!");
+        return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/usuario-carro?cpf=${encodeURIComponent(cpf)}`);
+
+    if (response.status === 404) {
+        alert("Usuário não encontrado.");
+        return;
+    }
+    const data = await response.json();
+
+    // Atualiza campos com os dados que vieram do servidor
+    document.getElementById('resId').innerText = data.id_usuario;
+    document.getElementById('resNome').innerText = data.nome;
+    document.getElementById('resUf').innerText = data.estado;
+    document.getElementById('resFabricante').innerText = data.veiculo.fabricante;
+    document.getElementById('resModelo').innerText = data.veiculo.modelo;
+    document.getElementById('resAno').innerText = parseInt(data.veiculo.ano, 10);
+    document.getElementById('resKm').innerText = parseInt(data.veiculo.km_mensal, 10);
+};
+
+const postItem = async (cpf, nome, uf, idFabricante, modelo, ano, kmMensal) => {
     const formData = new FormData();
+    formData.append('cpf', cpf);
     formData.append('nome', nome);
-    formData.append('estado', estado);
+    formData.append('uf', uf);
     formData.append('id_fabricante', idFabricante);
     formData.append('modelo', modelo);
     formData.append('ano', ano);
     formData.append('km_mensal', kmMensal);
 
     try {
-        const response = await fetch(`${API_BASE_URL}/usuario-veiculo`, {
+        const response = await fetch(`${API_BASE_URL}/usuario-carro`, {
             method: 'POST',
             body: formData
         });
@@ -174,52 +187,95 @@ const postItem = async (nome, estado, idFabricante, modelo, ano, kmMensal) => {
             const erroData = await response.json();
             alert(`Aviso do servidor: ${erroData.message}`);
         }
+
+        return response; // Retorna o objeto response original para quem chamou
     } catch (error) {
         console.error('Erro ao enviar dados ao servidor:', error);
+        return null;
     }
 };
 
-// Insere uma nova linha com colunas e botão de remoção na tabela
-const insertList = (nome, quantidade, valor) => {
-    var item = [nome, quantity = quantidade, price = valor];
-    var table = document.getElementById('myTable');
-    var row = table.insertRow();
+const resetaCamposConsulta = () => {
+    document.getElementById('resId').innerText = "-";
+    document.getElementById('resNome').innerText = "-";
+    document.getElementById('resUf').innerText = "-";
+    document.getElementById('resFabricante').innerText = "-";
+    document.getElementById('resModelo').innerText = "-";
+    document.getElementById('resAno').innerText = "-";
+    document.getElementById('resKm').innerText = "-";
+};
 
-    for (var i = 0; i < item.length; i++) {
-        var cel = row.insertCell(i);
-        cel.textContent = item[i];
+const alterarCadastro = async () => {
+    let id_usuario = document.getElementById("resId").innerText;
+
+    if (!id_usuario || id_usuario === "-") {
+        alert("Nenhum usuário selecionado para alteração.");
+        return;
     }
 
-    // Insere a célula da lixeira utilizando a imagem nativa do cabeçalho
-    let celAcao = row.insertCell(-1);
-    let imgLixeira = document.createElement("img");
-    imgLixeira.src = "https://flaticon.com";
-    imgLixeira.width = 15;
-    imgLixeira.height = 15;
-    imgLixeira.style.cursor = "pointer";
+    const formData = new FormData();
+    formData.append('id_usuario', id_usuario);
+    formData.append('cpf', cpf);
+    formData.append('nome', nome);
+    formData.append('uf', uf);
+    formData.append('id_fabricante', idFabricante);
+    formData.append('modelo', modelo);
+    formData.append('ano', ano);
+    formData.append('km_mensal', kmMensal);
 
-    // Vincula o evento de clique de exclusão diretamente ao ícone
-    imgLixeira.onclick = function () {
-        let linhaTr = this.parentElement.parentElement;
-        const nomeItem = linhaTr.getElementsByTagName('td')[0].innerHTML;
+    try {
+        const response = await fetch(`${API_BASE_URL}/usuario-carro`, {
+            method: 'PATCH',
+            body: formData
+        });
 
-        if (confirm(`Deseja remover o registro de "${nomeItem}"?`)) {
-            linhaTr.remove();
-            deleteItem(nomeItem);
-            alert("Removido com sucesso!");
+        if (!response.ok) {
+            const erroData = await response.json();
+            alert(`Aviso do servidor: ${erroData.message}`);
         }
-    };
-    celAcao.appendChild(imgLixeira);
+
+        return response; // Retorna o objeto response original para quem chamou
+    } catch (error) {
+        console.error('Erro ao enviar dados ao servidor:', error);
+        return null;
+    }
+    alert(data.message);
+}
+
+// Função para deletar cadastro exibido na tela de consulta
+const deleteCadastro = async () => {
+    let id_usuario = document.getElementById("resId").innerText;
+
+    if (!id_usuario || id_usuario === "-") {
+        alert("Nenhum usuário selecionado para exclusão.");
+        return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/usuario?id_usuario=${encodeURIComponent(id_usuario)}`,
+        { method: 'DELETE' });
+
+    if (response.status === 404) {
+        alert("Usuário não encontrado.");
+        return;
+    }
+    const data = await response.json();
+
+    alert(data.message);
+    resetaCamposConsulta();
+    resetaFormulario();
+    document.getElementById("deleteBtn").disabled = true;
+
 };
 
 // Limpa os campos após inserção bem sucedida
 const resetaFormulario = () => {
+    document.getElementById("cpf").value = "";
     document.getElementById("nome").value = "";
-    document.getElementById("rodagemMensal").value = "";
     document.getElementById("uf").selectedIndex = 0;
-    document.getElementById("marca").selectedIndex = 0;
+    document.getElementById("fabricante").selectedIndex = 0;
     document.getElementById("modelo").innerHTML = '<option value="" disabled selected>Modelo</option>';
     document.getElementById("modelo").disabled = true;
     document.getElementById("anoFabricacao").innerHTML = '<option value="" disabled selected>Ano</option>';
     document.getElementById("anoFabricacao").disabled = true;
+    document.getElementById("rodagemMensal").value = "";
 };

@@ -21,6 +21,8 @@
         <h2>Cadastro inicial</h2>
 
         <div class="linha">
+            <input class="campo-md" type="text" id="cpf" placeholder="CPF" pattern="\d*"
+                maxlength="11"><!--apenas números-->
             <input class="campo-largo" type="text" id="nome" placeholder="Nome completo" maxlength="50">
             <select id="uf">
                 <option class="campo-pp" value="" disabled selected>UF</option>
@@ -31,8 +33,8 @@
         </div>
         <div class="linha">
 
-            <select class="campo-md" id="marca">
-                <option value="" disabled selected>Marca</option>
+            <select class="campo-md" id="fabricante">
+                <option value="" disabled selected>Fabricante</option>
             </select>
             <select class="campo-md" id="modelo" disabled>
                 <option value="" disabled selected>Modelo</option>
@@ -43,7 +45,10 @@
             <input class="campo-p" type="number" id="rodagemMensal" placeholder="Km mensal">
         </div>
         <div class="linha">
-            <button onclick="newCadastro()" class="addBtn">Cadastrar</button>
+            <button onclick="novoCadastro()" class="addBtn">Cadastrar</button>
+            <button onclick="novaConsulta()" class="addBtn">Buscar</button>
+            <button onclick="alterarCadastro()" class="alterBtn" disabled>Alterar</button>
+            <button onclick="resetaFormulario()" class="addBtn">Limpar campos</button>
         </div>
     </section>
 
@@ -54,14 +59,18 @@
     <section class="dados">
         <div id="dadosCadastrados" class="card-resultado">
             <h3>Seus Dados Cadastrados</h3>
+            <p><strong>Id:</strong> <span id="resId">-</span></p>
             <p><strong>Nome:</strong> <span id="resNome">-</span></p>
             <p><strong>UF:</strong> <span id="resUf">-</span></p>
 
             <h3>Dados do Veículo</h3>
-            <p><strong>Marca:</strong> <span id="resMarca">-</span></p>
+            <p><strong>Fabricante:</strong> <span id="resFabricante">-</span></p>
             <p><strong>Modelo:</strong> <span id="resModelo">-</span></p>
             <p><strong>Ano:</strong> <span id="resAno">-</span></p>
             <p><strong>Rodagem Mensal:</strong> <span id="resKm">-</span> km</p>
+        </div>
+        <div class="linha">
+            <button id="deleteBtn" onclick="deleteCadastro()" class="delBtn" disabled>Exclusão</button>
         </div>
     </section>
 

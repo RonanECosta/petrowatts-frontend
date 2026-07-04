@@ -1,18 +1,22 @@
-/* CORES */
 :root {
     --verde-destaque: #2e7d32;
-    /* destaque */
     --verde-claro: #e8f5e9;
-    /* Fundo suave */
     --verde-escuro: #1b5e20;
-    /* Texto principal e títulos */
+
+    --vermelho-destaque: #d32f2f;
+    --vermelho-claro: #ffebee;
+    --vermelho-escuro: #b71c1c;
+
+    --amarelo-destaque: #fbc02d;
+    --amarelo-claro: #fff9c4;
+    --amarelo-escuro: #f57f17;
+
     --cinza-fundo: #f4f7f5;
-    /* Cor de fundo */
+
     --branco: #ffffff;
     --texto-escuro: #333333;
-    --erro-vermelho: #d32f2f;
+    --erro-vermelho: var(--vermelho-destaque);
     --borda: #c8e6c9;
-    /* Borda esverdeada suave */
 }
 
 * {
@@ -127,6 +131,49 @@ header .icon img {
 }
 
 .addBtn:active {
+    transform: scale(0.98);
+}
+
+.delBtn {
+    background-color: var(--vermelho-destaque);
+    color: var(--branco);
+    border: none;
+    padding: 12px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 3px 6px rgba(211, 47, 47, 0.2);
+}
+
+.delBtn:hover {
+    background-color: var(--vermelho-escuro);
+}
+
+.delBtn:active {
+    transform: scale(0.98);
+}
+
+.alterBtn {
+    background-color: var(--amarelo-destaque);
+    color: #212121;
+    box-shadow: 0 3px 6px rgba(251, 192, 45, 0.2);
+    margin-left: 10px;
+    border: none;
+    padding: 12px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.alterBtn:hover {
+    background-color: var(--amarelo-escuro);
+}
+
+.alterBtn:active {
     transform: scale(0.98);
 }
 
