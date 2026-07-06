@@ -11,6 +11,9 @@
     --amarelo-claro: #fff9c4;
     --amarelo-escuro: #f57f17;
 
+    --cinza-desativado: #cccccc;
+    --cinza-texto-desativado: #777777;
+
     --cinza-fundo: #f4f7f5;
 
     --branco: #ffffff;
@@ -55,7 +58,7 @@ header .icon img {
     width: auto;
 }
 
-.newCar {
+.cadastro {
     max-width: 800px;
     margin: 0 auto 20px auto;
     background-color: var(--branco);
@@ -73,8 +76,8 @@ header .icon img {
     flex-wrap: wrap;
 }
 
-.newCar input,
-.newCar select {
+.cadastro input,
+.cadastro select {
     padding: 10px 11px;
     border: 1px solid var(--borda);
     border-radius: 4px;
@@ -85,8 +88,8 @@ header .icon img {
     transition: all 0.3s ease;
 }
 
-.newCar input:focus,
-.newCar select:focus {
+.cadastro input:focus,
+.cadastro select:focus {
     border-color: var(--verde-destaque);
     background-color: var(--branco);
     box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
@@ -202,6 +205,18 @@ header .icon img {
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     overflow: hidden;
+}
+
+/* Bloco para o botão desativado */
+.cadastro button:disabled,
+.dados button:disabled {
+    background-color: var(--cinza-desativado);
+    color: var(--cinza-texto-desativado);
+    border: 1px solid var(--cinza-desativado);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    opacity: 0.7;
 }
 
 /* Esconde as setas nativas dos campos numéricos */
