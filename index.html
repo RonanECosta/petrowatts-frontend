@@ -49,6 +49,7 @@
             <button onclick="novaConsulta()" class="addBtn">Buscar</button>
             <button id="alterarBtn"  onclick="alterarCadastro()" class="alterBtn" disabled>Alterar</button>
             <button onclick="limpaFormulario()" class="addBtn">Limpar campos</button>
+            <button id="irParaResultadoBtn" onclick="irParaResultados()" class="addBtn" disabled style="background-color: #28a745;">Ver Comparativo</button>
         </div>
     </section>
 
@@ -72,6 +73,13 @@
         <div class="linha">
             <button id="deleteBtn" onclick="deleteCadastro()" class="delBtn" disabled>Exclusão</button>
         </div>
+    </section>
+
+    <section class="avancar-dashboard">
+        <button id="irParaDashboardBtn" onclick="irParaDashboard()" class="addBtn" disabled>Ir para Dashboard</button>
+        <script>
+            document.getElementById('irParaDashboardBtn').disabled = false;
+        </script>
     </section>
 
     <script src="scripts.js"></script>

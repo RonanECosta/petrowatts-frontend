@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Petrowatt - Comparativo e Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <title>Petrowatt</title>
+</head>
+
+<body>
+    <!-- Cabeçalho -->
+    <header>
+        <div class="logo-titulo">
+            <h2>Petrowatt - Dashboard de Eletrificação</h2>
+        </div>
+        <div class="usuario-info">
+            <p><strong>Usuário (CPF):</strong> <span id="dashCpf">-</span></p>
+        </div>
+    </header>
+
+    <!-- Seção 1: Miniaturas de Carros Elétricos (Seleção) -->
+    <section class="secao-catalogo">
+        <h3>Escolha um Carro Elétrico para Comparação</h3>
+        <div id="listaMiniaturasEletricos" class="grid-miniaturas">
+            <!-- As miniaturas dos carros elétricos serão injetadas via JS -->
+            <div class="miniatura-card" data-id="1">
+                <img src="./img/na.png" alt="Carro Elétrico">
+                <h4>Modelo Elétrico Exemplo</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção 2: Destaque do Carro Elétrico Selecionado -->
+    <section class="secao-destaque-eletrico">
+        <h3>Detalhes do Elétrico Selecionado</h3>
+        <div class="card-eletrico-detalhe">
+            <div class="eletrico-imagem">
+                <img id="elFoto" src="./img/na.png" alt="Foto do Elétrico">
+            </div>
+            <div class="eletrico-pontuacoes">
+                <p><strong>Conforto:</strong>
+                <div id="elConfortoBar" class="barra-ilustrativa"></div>
+                </p>
+                <p><strong>Potência:</strong>
+                <div id="elPotenciaBar" class="barra-ilustrativa"></div>
+                </p>
+                <p><strong>Custo-Benefício:</strong>
+                <div id="elCustoBar" class="barra-ilustrativa"></div>
+                </p>
+                <p><strong>Autonomia:</strong>
+                <div id="elAutonomiaBar" class="barra-ilustrativa"></div>
+                </p>
+            </div>
+            <div class="eletrico-dados-numericos">
+                <p><strong>Preço:</strong> R$ <span id="elPreco">-</span></p>
+                <p><strong>Potência Real:</strong> <span id="elPotenciaNum">-</span> cv</p>
+                <p><strong>Autonomia Real:</strong> <span id="elAutonomiaNum">-</span> km</p>
+                <p><strong>Acessórios:</strong> <span id="elAcessorios">-</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção 3: Comparativo com o Veículo a Combustão do Usuário -->
+    <section class="secao-comparativo-financeiro">
+        <h3>Comparativo: Seu Carro a Combustão x Elétrico Escolhido</h3>
+        <div class="cards-comparativo-wrapper">
+            <!-- Dados do Veículo Atual do Usuário -->
+            <div class="card-veiculo-atual">
+                <h4>Seu Veículo Atual (Combustão)</h4>
+                <p><strong>Fabricante:</strong> <span id="combustaoFabricante">-</span></p>
+                <p><strong>Modelo:</strong> <span id="combustaoModelo">-</span></p>
+                <p><strong>Ano:</strong> <span id="combustaoAno">-</span></p>
+                <p><strong>Rodagem Mensal:</strong> <span id="combustaoKm">-</span> km</p>
+            </div>
+
+            <!-- Dados Calculados / Retornados pelo Backend -->
+            <div class="card-resultados-financeiros">
+                <h4>Viabilidade Financeira</h4>
+                <p><strong>Custo Inicial Necessário (Troca):</strong> R$ <span id="resCustoTroca">-</span></p>
+                <p><strong>Economia Mensal Estimada:</strong> R$ <span id="resEconomiaMensal">-</span></p>
+                <p><strong>Tempo para o Veículo se Pagar (Payback):</strong> <span id="resPayback">-</span> meses</p>
+                <p><strong>Tarifa Aplicada (UF):</strong> R$ <span id="resTarifaUf">-</span> por kWh</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ações / Navegação -->
+    <section class="secao-acoes">
+        <button onclick="voltarCadastro()">Voltar ao Cadastro</button>
+    </section>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

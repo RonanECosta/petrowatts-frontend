@@ -126,6 +126,7 @@ const novoCadastro = async () => {
     const data = await response.json();
 
     populaTela(data.id_usuario, nome, uf, fabricante, modelo, parseInt(ano, 10), parseInt(rodagem, 10));
+    ativaBotaoResultado(cpf);
 };
 
 const alterarCadastro = async () => {
@@ -184,6 +185,7 @@ const novaConsulta = async () => {
     // Atualiza campos com os dados que vieram do servidor
     populaFormulario(data);
     populaTela(data.id_usuario, data.nome, data.estado, data.veiculo.fabricante, data.veiculo.modelo, data.veiculo.ano, data.veiculo.km_mensal);
+    ativaBotaoResultado(cpf);
 };
 
 const postItem = async (cpf, nome, uf, idFabricante, modelo, ano, kmMensal) => {
@@ -266,6 +268,7 @@ const deleteCadastro = async () => {
     limpaTela();
     limpaFormulario();
     document.getElementById("deleteBtn").disabled = true;
+    desativaBotaoResultado();
 
 };
 
@@ -314,6 +317,23 @@ function populaTela(id_usuario, nome, estado, fabricante, modelo, ano, km_mensal
     document.getElementById("alterarBtn").disabled = false;
 }
 
+function ativaBotaoResultado(cpf) {
+    setBotaoResultado(cpf, true);
+}
+
+function desativaBotaoResultado() {
+    setBotaoResultado(null, false);
+}
+
+function setBotaoResultado(cpf, ativar) {
+    if (ativar) {
+        localStorage.setItem('cpfConsulta', cpf);
+    } else {
+        localStorage.removeItem('cpfConsulta');
+    }
+    document.getElementById('irParaResultadoBtn').disabled = !ativar;
+}
+
 const limpaTela = () => {
     document.getElementById('resId').innerText = "-";
     document.getElementById('resNome').innerText = "-";
@@ -340,5 +360,15 @@ const limpaFormulario = () => {
 
     document.getElementById("deleteBtn").disabled = true;
     document.getElementById("alterarBtn").disabled = true;
+    desativaBotaoResultado();
 };
 
+const irParaResultados = () => {
+    const cpf = localStorage.getItem('cpfConsulta');
+    if (!cpf) {
+        alert("Nenhum CPF ativo para consulta.");
+        return;
+    }
+    // Redireciona passando o CPF na URL (ou a nova página lê direto do localStorage)
+    window.location.href = `dashboard.html?cpf=${encodeURIComponent(cpf)}`;
+};
