@@ -1,11 +1,15 @@
-const API_BASE_URL = 'http://127.0.0.1:5000';
+import { buscarUsuarioCarroPorCpf } from './service/usuario-service.js';
+import { listarVeiculosEletricos } from './service/veiculo-service.js';
+import { buscarTarifaEnergiaUf } from './service/tarifa-service.js';
+import { getImagemSrcFrom } from './utils/image-helper.js';
+import { calcularCustoTroca, calcularEconomiaMensal, calcularMesesPayback } from './service/calculos-service.js';
 
-// Variável para armazenar os dados do usuário/carro a combustão vindos do backend
+
 let dadosUsuarioGlobal = null;
 let carroEletricoSelecionado = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Resgata o CPF da sessão (via URL ou localStorage)
+    // Resgata o CPF da sessão (via URL ou localStorage)
     const urlParams = new URLSearchParams(window.location.search);
     const cpf = urlParams.get('cpf') || localStorage.getItem('cpfConsulta');
 
@@ -14,36 +18,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = "index.html";
         return;
     }
-
     document.getElementById('dashCpf').innerText = cpf;
-
-    // 2. Carrega os dados do usuário e do veículo a combustão do backend
     await carregarDadosUsuario(cpf);
-
-    // 3. Carrega o catálogo de carros elétricos disponíveis para comparação
     await carregarCatalogoEletricos();
 });
 
 // Busca o usuário e o carro a combustão no backend
 const carregarDadosUsuario = async (cpf) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/usuario-carro?cpf=${encodeURIComponent(cpf)}`);
-        if (!response.ok) {
-            throw new Error("Erro ao carregar dados do usuário.");
-        }
-        dadosUsuarioGlobal = await response.json();
+        console.log("Carregando dados do usuário para o CPF:", cpf);
+        dadosUsuarioGlobal = await buscarUsuarioCarroPorCpf(cpf);
         console.log("Dados do usuário carregados:", dadosUsuarioGlobal);
-
         // Popula a seção do carro a combustão na tela
-        console.log("Populando seção do carro a combustão...");
         document.getElementById('combustaoFabricante').innerText = dadosUsuarioGlobal.veiculo.fabricante || '-';
-        console.log("Fabricante carregado:", dadosUsuarioGlobal.veiculo.fabricante);
         document.getElementById('combustaoModelo').innerText = dadosUsuarioGlobal.veiculo.modelo || '-';
-        console.log("Modelo:", dadosUsuarioGlobal.veiculo.modelo);
         document.getElementById('combustaoAno').innerText = dadosUsuarioGlobal.veiculo.ano || '-';
-        console.log("Ano:", dadosUsuarioGlobal.veiculo.ano);
         document.getElementById('combustaoKm').innerText = dadosUsuarioGlobal.veiculo.km_mensal || '-';
-        console.log("Rodagem Mensal:", dadosUsuarioGlobal.veiculo.km_mensal);
 
     } catch (error) {
         console.error("Erro:", error);
@@ -54,19 +44,9 @@ const carregarDadosUsuario = async (cpf) => {
 const carregarCatalogoEletricos = async () => {
     const container = document.getElementById('listaMiniaturasEletricos');
     container.innerHTML = '<p>Carregando veículos elétricos...</p>';
-
     try {
-        const response = await fetch(`${API_BASE_URL}/veiculos-eletricos`);
-        let eletricos = [];
-
-        if (response.ok) {
-            const data = await response.json();
-            eletricos = data.veiculos || data || [];
-        } else {
-            eletricos = [];
-        }
-
-        container.innerHTML = ''; // Limpa a mensagem de carregando
+        const eletricos = await listarVeiculosEletricos();
+        container.innerHTML = '';
 
         if (eletricos.length === 0) {
             container.innerHTML = '<p>Nenhum veículo elétrico disponível.</p>';
@@ -74,9 +54,7 @@ const carregarCatalogoEletricos = async () => {
         }
 
         eletricos.forEach(ev => {
-            // Operação ternária aninhada extraída para instruções independentes
             let imagemSrc = getImagemSrcFrom(ev);
-
             const card = document.createElement('div');
             card.className = 'miniatura-card';
             card.style.cursor = 'pointer';
@@ -85,12 +63,9 @@ const carregarCatalogoEletricos = async () => {
                 <h4 style="margin-top: 8px; font-size: 14px;">${ev.modelo}</h4>
                 <p style="font-size: 12px; color: #666;">${ev.fabricante || ''}</p>
             `;
-
-            // Ao clicar na miniatura, seleciona o carro para detalhamento
             card.addEventListener('click', () => selecionarCarroEletrico(ev));
             container.appendChild(card);
         });
-
     } catch (error) {
         console.error("Erro ao carregar elétricos:", error);
         container.innerHTML = '<p>Erro ao carregar o catálogo de elétricos.</p>';
@@ -101,14 +76,12 @@ const carregarCatalogoEletricos = async () => {
 const selecionarCarroEletrico = (ev) => {
     carroEletricoSelecionado = ev;
 
-    // 1. Formata a imagem em Base64 para a área de destaque
     const imagemSrc = getImagemSrcFrom(ev);
-
     const preco = ev.valor_compra || ev.preco || 0;
     const potencia = ev.potencia_cv || ev.potencia || 0;
     const autonomia = ev.autonomia_km || ev.autonomia || 0;
 
-    // 2. Preenche a seção de destaque
+    // Seção de destaque
     document.getElementById('elFoto').src = imagemSrc;
     document.getElementById('elPreco').innerText = preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
     document.getElementById('elPotenciaNum').innerText = potencia;
@@ -121,7 +94,7 @@ const selecionarCarroEletrico = (ev) => {
             : "Carregamento padrão compatível";
     }
 
-    // 3. Preenche as barrinhas ilustrativas
+    // Barras ilustrativas
     if (document.getElementById('elPotenciaBar')) {
         document.getElementById('elPotenciaBar').style.width = `${Math.min((potencia / 300) * 100, 100)}%`;
     }
@@ -129,34 +102,21 @@ const selecionarCarroEletrico = (ev) => {
         document.getElementById('elAutonomiaBar').style.width = `${Math.min((autonomia / 600) * 100, 100)}%`;
     }
 
-    // 4. Dispara o cálculo financeiro comparativo
+    // Dispara o cálculo financeiro comparativo
     calcularComparativoFinanceiro(ev);
-};
-
-const getImagemSrcFrom = (ev) => {
-    let imagemSrc = './img/placeholder-ev.png';
-
-    if (ev.thumbnail) {
-        if (ev.thumbnail.startsWith('data:image')) {
-            imagemSrc = ev.thumbnail;
-        } else {
-            imagemSrc = `data:image/jpeg;base64,${ev.thumbnail}`;
-        }
-    }
-
-    return imagemSrc;
 };
 
 // Realiza os cálculos ou chama o backend para obter o comparativo
 const calcularComparativoFinanceiro = async (evEletrico) => {
     if (!dadosUsuarioGlobal) return;
 
-    const ufUsuario = dadosUsuarioGlobal.estado;
-
     try {
-        // Exemplo de requisição para buscar a tarifa do Mockaroo que configuramos antes
-        const responseTarifa = await fetch(`https://my.api.mockaroo.com/tarifas?uf=${ufUsuario}&key=d98ffdf0`);
-        const dadosTarifa = await responseTarifa.json();
+        const ufUsuario = dadosUsuarioGlobal.estado;
+        console.log("Calculando comparativo financeiro para o usuário:", dadosUsuarioGlobal.cpf);
+        console.log("Estado do usuário:", ufUsuario);
+        const tarifa = await buscarTarifaEnergiaUf(dadosUsuarioGlobal.estado);
+        document.getElementById('resTarifaUf').innerText = tarifa.toFixed(3);
+        const dadosTarifa = tarifa;
 
         const valorTarifa = dadosTarifa.tarifa || 0.95; // fallback caso dê erro
         document.getElementById('resTarifaUf').innerText = valorTarifa.toFixed(3);
@@ -165,9 +125,9 @@ const calcularComparativoFinanceiro = async (evEletrico) => {
         // a rodagem mensal (`dadosUsuarioGlobal.veiculo.km_mensal`) e o preço/autonomia do elétrico escolhido.
         // Exemplo ilustrativo de lógica local provisória:
 
-        let custoTrocaEstimado = evEletrico.preco; // Simplificado
-        let economiaMensalEstimada = 450.00; // Valor simulado de economia de gasolina vs luz
-        let mesesPayback = (custoTrocaEstimado / economiaMensalEstimada).toFixed(1);
+        let custoTrocaEstimado = calcularCustoTroca(evEletrico); // Supondo que exista uma função para calcular o custo de troca
+        let economiaMensalEstimada = calcularEconomiaMensal(evEletrico); // Supondo que exista uma função para calcular a economia mensal
+        let mesesPayback = calcularMesesPayback(custoTrocaEstimado, economiaMensalEstimada); // Supondo que exista uma função para calcular os meses de payback
 
         document.getElementById('resCustoTroca').innerText = custoTrocaEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
         document.getElementById('resEconomiaMensal').innerText = economiaMensalEstimada.toLocaleString('pt-BR', { minimumFractionDigits: 2 });

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Petrowatt</title>
 </head>
 
@@ -13,7 +13,7 @@
             <h2>Investimento e Economia: veículos elétricos x combustão</h2>
         </div>
         <div class="icon">
-            <img src="./img/favicon.ico" alt="icon">
+            <img src="./assets/img/favicon.ico" alt="icon">
         </div>
     </header>
 
@@ -47,9 +47,10 @@
         <div class="linha">
             <button onclick="novoCadastro()" class="addBtn">Cadastrar</button>
             <button onclick="novaConsulta()" class="addBtn">Buscar</button>
-            <button id="alterarBtn"  onclick="alterarCadastro()" class="alterBtn" disabled>Alterar</button>
+            <button id="alterarBtn" onclick="alterarCadastro()" class="alterBtn" disabled>Alterar</button>
             <button onclick="limpaFormulario()" class="addBtn">Limpar campos</button>
-            <button id="irParaResultadoBtn" onclick="irParaResultados()" class="addBtn" disabled style="background-color: #28a745;">Ver Comparativo</button>
+            <button id="irParaResultadoBtn" onclick="irParaResultados()" class="addBtn" disabled
+                style="background-color: #28a745;">Ver Comparativo</button>
         </div>
     </section>
 
@@ -82,7 +83,7 @@
         </script>
     </section>
 
-    <script src="scripts.js"></script>
+    <script type="module" src="./js/scripts.js"></script>
 </body>
 
 </html>

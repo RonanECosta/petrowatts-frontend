@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Petrowatt - Comparativo e Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Petrowatt</title>
 </head>
 
@@ -25,7 +25,7 @@
         <div id="listaMiniaturasEletricos" class="grid-miniaturas">
             <!-- As miniaturas dos carros elétricos serão injetadas via JS -->
             <div class="miniatura-card" data-id="1">
-                <img src="./img/na.png" alt="Carro Elétrico">
+                <img src="./assets/img/na.png" alt="Carro Elétrico">
                 <h4>Modelo Elétrico Exemplo</h4>
             </div>
         </div>
@@ -36,7 +36,7 @@
         <h3>Detalhes do Elétrico Selecionado</h3>
         <div class="card-eletrico-detalhe">
             <div class="eletrico-imagem">
-                <img id="elFoto" src="./img/na.png" alt="Foto do Elétrico">
+                <img id="elFoto" src="./assets/img/na.png" alt="Foto do Elétrico">
             </div>
             <div class="eletrico-pontuacoes">
                 <p><strong>Conforto:</strong>
@@ -90,7 +90,7 @@
         <button onclick="voltarCadastro()">Voltar ao Cadastro</button>
     </section>
 
-    <script src="dashboard.js"></script>
+    <script type="module" src="./js/dashboard.js"></script>
 </body>
 
 </html>
