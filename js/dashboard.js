@@ -1,8 +1,11 @@
-import { buscarUsuarioCarroPorCpf } from './service/usuario-service.js';
+import { buscarUsuarioComVeiculoJson } from './service/usuario-service.js';
 import { listarVeiculosEletricos } from './service/veiculo-service.js';
 import { buscarTarifaEnergiaUf } from './service/tarifa-service.js';
+import { buscarPrecoCombustivelUf } from './service/combustivel-service.js';
 import { getImagemSrcFrom } from './utils/image-helper.js';
-import { calcularCustoTroca, calcularEconomiaMensal, calcularMesesPayback } from './service/calculos-service.js';
+import { calcularCustoMensalCombustao, calcularCustoMensalEletrico } from './utils/consumo-helper.js';
+import { calcularCustoTroca, calcularMesesPayback } from './service/calculos-service.js';
+import { formatCurrency, getNumberFromFormattedString } from './utils/formatter.js';
 
 
 let dadosUsuarioGlobal = null;
@@ -27,13 +30,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 const carregarDadosUsuario = async (cpf) => {
     try {
         console.log("Carregando dados do usuário para o CPF:", cpf);
-        dadosUsuarioGlobal = await buscarUsuarioCarroPorCpf(cpf);
+        dadosUsuarioGlobal = await buscarUsuarioComVeiculoJson(cpf);
         console.log("Dados do usuário carregados:", dadosUsuarioGlobal);
         // Popula a seção do carro a combustão na tela
         document.getElementById('combustaoFabricante').innerText = dadosUsuarioGlobal.veiculo.fabricante || '-';
         document.getElementById('combustaoModelo').innerText = dadosUsuarioGlobal.veiculo.modelo || '-';
         document.getElementById('combustaoAno').innerText = dadosUsuarioGlobal.veiculo.ano || '-';
         document.getElementById('combustaoKm').innerText = dadosUsuarioGlobal.veiculo.km_mensal || '-';
+        document.getElementById('combustaoRevenda').innerText = formatCurrency(dadosUsuarioGlobal.veiculo.valor_revenda || 0);
 
     } catch (error) {
         console.error("Erro:", error);
@@ -112,26 +116,33 @@ const calcularComparativoFinanceiro = async (evEletrico) => {
 
     try {
         const ufUsuario = dadosUsuarioGlobal.estado;
-        console.log("Calculando comparativo financeiro para o usuário:", dadosUsuarioGlobal.cpf);
-        console.log("Estado do usuário:", ufUsuario);
-        const tarifa = await buscarTarifaEnergiaUf(dadosUsuarioGlobal.estado);
-        document.getElementById('resTarifaUf').innerText = tarifa.toFixed(3);
-        const dadosTarifa = tarifa;
 
-        const valorTarifa = dadosTarifa.tarifa || 0.95; // fallback caso dê erro
-        document.getElementById('resTarifaUf').innerText = valorTarifa.toFixed(3);
+        console.log("Calculando comparativo financeiro para o usuário: ", dadosUsuarioGlobal.cpf);
+        console.log("Estado do usuário: ", ufUsuario);
+        console.log("Veículo ev: ", evEletrico);
 
-        // Aqui você faria a chamada para o seu backend passando o id do carro a combustão, 
-        // a rodagem mensal (`dadosUsuarioGlobal.veiculo.km_mensal`) e o preço/autonomia do elétrico escolhido.
-        // Exemplo ilustrativo de lógica local provisória:
+        const valorKwh = await buscarTarifaEnergiaUf(dadosUsuarioGlobal.estado);
+        document.getElementById('resTarifaKwh').innerText = valorKwh.toFixed(3);
 
-        let custoTrocaEstimado = calcularCustoTroca(evEletrico); // Supondo que exista uma função para calcular o custo de troca
-        let economiaMensalEstimada = calcularEconomiaMensal(evEletrico); // Supondo que exista uma função para calcular a economia mensal
-        let mesesPayback = calcularMesesPayback(custoTrocaEstimado, economiaMensalEstimada); // Supondo que exista uma função para calcular os meses de payback
+        let carro = dadosUsuarioGlobal.veiculo;
+        let rodagem = carro.km_mensal;
+        let consumoCarroCombustao = carro.consumo;
+        let valorCombustivel = await buscarPrecoCombustivelUf(ufUsuario);
+        let valorRevenda = Number.parseFloat(carro.valor_revenda) || 0;
 
-        document.getElementById('resCustoTroca').innerText = custoTrocaEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-        document.getElementById('resEconomiaMensal').innerText = economiaMensalEstimada.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-        document.getElementById('resPayback').innerText = `${mesesPayback} meses`;
+        let custoMensalCombustao = await calcularCustoMensalCombustao(rodagem, consumoCarroCombustao, valorCombustivel);
+        let custoMensalEletrico = await calcularCustoMensalEletrico(rodagem, evEletrico.consumo_mj_km, valorKwh);
+
+        let custoTrocaEstimado = calcularCustoTroca(evEletrico.valor_compra, valorRevenda);
+        let economiaMensalEstimada = custoMensalCombustao - custoMensalEletrico;
+
+        document.getElementById('resCustoTroca').innerText = formatCurrency(custoTrocaEstimado);
+        document.getElementById('resCustoMensalCombustao').innerText = formatCurrency(custoMensalCombustao);
+        document.getElementById('resCustoMensalEletrico').innerText = formatCurrency(custoMensalEletrico);
+        document.getElementById('resEconomiaMensal').innerText = formatCurrency(economiaMensalEstimada);
+        document.getElementById('resTarifaCombustivel').innerText = formatCurrency(valorCombustivel, 3);
+        document.getElementById('resTarifaKwh').innerText = formatCurrency(valorKwh, 3);
+        document.getElementById('resPayback').innerText = calcularMesesPayback(custoTrocaEstimado, economiaMensalEstimada);
 
     } catch (error) {
         console.error("Erro ao calcular comparativo:", error);
