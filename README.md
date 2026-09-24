@@ -4,25 +4,34 @@ Este é um MVP que será apresentado como Trabalho de Conclusão de Curso (TCC) 
 
 ## Funcionamento do front-end
 
-Composto de uma página index.html, uma folha de estilos CSS e um arquivo Java Script.
+Composto de páginas html, folha de estilos CSS e arquivos JavaScript modularizados. O sistema se comunica com o backend e com APIs públicas.
 
-## sobre a aplicação
+## Sobre a aplicação
 
 O objetivo do sistema é apresentar ao usuário de maneira clara e intuitiva os custos necessários e a possível economia na troca de seu veículo a combustão por um elétrico, assim como o tempo que levará para que o investimento inicial seja "recuperado".
 
 Para isso haverá um cadastro do usuário e seu estado de residência e, em seguida, o cadastro do seu carro a combustão.
 
-Posteriormente a ser desenvolvido em outras sprints o usuário poderá selecionar um veículo e comparar os custos para aquisição e valores economizados (ou não).
+Feito isso o usuário avança para uma página onde ele pode visualizar diferentes modelos de veículos elétricos, suas informações e comparar os custos para aquisição e os valores que serão economizados (ou não).
 
 ### Tecnologias Utilizadas
 
-* **Frontend:** HTML, Bootstrap, CSS e Flask
-* **Backend:** Python e banco de dados SQLite
+* **Frontend:** HTML, JavaScript, CSS
+* **Backend:** Python, banco de dados MySQL, Docker
 * **Documentação:** Swagger para documentar as APIs
 
 ## Preparação do ambiente de execução
 
-Basta executar a index.html, o back-end deverá estar em execução para atender as solicitações do front-end.
+Na primeira sprint bastava executar o index.html. Porém devido ao crescimento do projeto e adoção de modularização nos arquivos java script, NÃO é possível executar o arquivo diretamente. Faça isso para permitir a execução do frontend:
+
+1. Abra um terminal
+2. Navegue até a pasta do projeto frontend
+3. Execute o comando:
+        ``` bash
+        python -m http.server 8080
+        ```
+
+4. no navegador de sua preferência, acesse <http://127.0.0.1:8080/index.html>
 
 ## Plano de desenvolvimento
 
@@ -35,7 +44,10 @@ Basta executar a index.html, o back-end deverá estar em execução para atender
 
 ### Segunda Sprint
 
-* À definir;
+* construção de página "dashboard" com dados do veículo a combustão e elétrico
+* aumento de quantidade de informações
+* construção de métodos comparativos
+* consulta a apis públicas
 
 ### Terceira Sprint
 
