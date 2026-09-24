@@ -5,7 +5,7 @@ import { buscarPrecoCombustivelUf } from './service/combustivel-service.js';
 import { getImagemSrcFrom } from './utils/image-helper.js';
 import { calcularCustoMensalCombustao, calcularCustoMensalEletrico } from './utils/consumo-helper.js';
 import { calcularCustoTroca, calcularMesesPayback } from './service/calculos-service.js';
-import { formatCurrency, getNumberFromFormattedString } from './utils/formatter.js';
+import { formatCurrency } from './utils/formatter.js';
 
 
 let dadosUsuarioGlobal = null;
@@ -81,29 +81,46 @@ const selecionarCarroEletrico = (ev) => {
     carroEletricoSelecionado = ev;
 
     const imagemSrc = getImagemSrcFrom(ev);
-    const preco = ev.valor_compra || ev.preco || 0;
-    const potencia = ev.potencia_cv || ev.potencia || 0;
-    const autonomia = ev.autonomia_km || ev.autonomia || 0;
+    const preco = ev.valor_compra || 0;
+    const potencia = ev.potencia_cv || 0;
+    const autonomia = ev.autonomia_km || 0;
 
     // Seção de destaque
-    document.getElementById('elFoto').src = imagemSrc;
-    document.getElementById('elPreco').innerText = preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-    document.getElementById('elPotenciaNum').innerText = potencia;
-    document.getElementById('elAutonomiaNum').innerText = autonomia;
+    document.getElementById('evFoto').src = imagemSrc;
+    document.getElementById('evPreco').innerText = formatCurrency(preco);
+    document.getElementById('evPotenciaNum').innerText = potencia;
+    document.getElementById('evAutonomiaNum').innerText = autonomia;
 
     // Acessórios / Infraestrutura
-    if (document.getElementById('elAcessorios')) {
-        document.getElementById('elAcessorios').innerText = ev.necessario_infra
-            ? "Requer infraestrutura de carregamento dedicada"
+    if (document.getElementById('evAcessorios')) {
+        document.getElementById('evAcessorios').innerText = ev.necessario_infra
+            ? "Requer infraestrutura de carregamento dedicada*"
             : "Carregamento padrão compatível";
     }
 
+    document.getElementById('evObservacao').innerText = ev.necessario_infra ? "*Custo da infraestrutura varia conforme a potência, rede elétrica existente, entre outros fatores. Consideramos aprox. R$10mil" : "";
+
     // Barras ilustrativas
-    if (document.getElementById('elPotenciaBar')) {
-        document.getElementById('elPotenciaBar').style.width = `${Math.min((potencia / 300) * 100, 100)}%`;
+    const barPotencia = document.getElementById('evPotenciaBar');
+    const barAutonomia = document.getElementById('evAutonomiaBar');
+    const barConforto = document.getElementById('evConfortoBar');
+    const barCustoBeneficio = document.getElementById('evCustoBeneficioBar');
+    const barAutonomiaContainer = document.getElementById('evAutonomiaBarContainer');
+
+    
+
+    if (barPotencia) {
+        console.log("Calculando barra de potencia para:", potencia);
+        // Calcula a porcentagem com base no teto de 300 cv (normalizado de 0 a 100%)
+        const pctPotencia = Math.min(Math.max((potencia / 300) * 100, 0), 100);
+        barPotencia.style.width = `${pctPotencia}%`;
     }
-    if (document.getElementById('elAutonomiaBar')) {
-        document.getElementById('elAutonomiaBar').style.width = `${Math.min((autonomia / 600) * 100, 100)}%`;
+
+    if (barAutonomia) {
+        console.log("Calculando barra de autonomia para:", autonomia);
+        // Calcula a porcentagem com base no teto de 600 km (normalizado de 0 a 100%)
+        const pctAutonomia = Math.min(Math.max((autonomia / 600) * 100, 0), 100);
+        barAutonomia.style.width = `${pctAutonomia}%`;
     }
 
     // Dispara o cálculo financeiro comparativo
@@ -117,9 +134,9 @@ const calcularComparativoFinanceiro = async (evEletrico) => {
     try {
         const ufUsuario = dadosUsuarioGlobal.estado;
 
-        console.log("Calculando comparativo financeiro para o usuário: ", dadosUsuarioGlobal.cpf);
-        console.log("Estado do usuário: ", ufUsuario);
-        console.log("Veículo ev: ", evEletrico);
+        console.log("Calculando comparativo financeiro para o usuário: ", dadosUsuarioGlobal.cpf,
+            "- Estado do usuário: ", ufUsuario,
+            "- Veículo ev: ", evEletrico);
 
         const valorKwh = await buscarTarifaEnergiaUf(dadosUsuarioGlobal.estado);
         document.getElementById('resTarifaKwh').innerText = valorKwh.toFixed(3);
@@ -133,7 +150,7 @@ const calcularComparativoFinanceiro = async (evEletrico) => {
         let custoMensalCombustao = await calcularCustoMensalCombustao(rodagem, consumoCarroCombustao, valorCombustivel);
         let custoMensalEletrico = await calcularCustoMensalEletrico(rodagem, evEletrico.consumo_mj_km, valorKwh);
 
-        let custoTrocaEstimado = calcularCustoTroca(evEletrico.valor_compra, valorRevenda);
+        let custoTrocaEstimado = calcularCustoTroca(evEletrico.valor_compra, valorRevenda, evEletrico.necessita_infra);
         let economiaMensalEstimada = custoMensalCombustao - custoMensalEletrico;
 
         document.getElementById('resCustoTroca').innerText = formatCurrency(custoTrocaEstimado);
@@ -149,6 +166,6 @@ const calcularComparativoFinanceiro = async (evEletrico) => {
     }
 };
 
-const voltarCadastro = () => {
+window.voltarCadastro = () => {
     window.location.href = "index.html";
 };

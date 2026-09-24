@@ -9,6 +9,9 @@ import {
     listarModelosPorFabricante,
     listarAnosPorModelo
 } from './service/veiculo-service.js';
+import {
+    formatCurrency
+} from './utils/formatter.js';
 
 // Inicializa a página
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,7 +28,7 @@ const carregarUfs = () => {
         'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI',
         'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
     ];
-    const selectEstado = document.getElementById('uf');
+    const selectEstado = document.getElementById('comboUf');
     if (!selectEstado) return;
 
     ufs.forEach(uf => {
@@ -37,7 +40,7 @@ const carregarUfs = () => {
 };
 
 const carregarFabricantesCombustao = async () => {
-    const selectFabricante = document.getElementById('fabricante');
+    const selectFabricante = document.getElementById('comboFabricante');
 
     try {
         const fabricantes = await listarFabricantesCombustao();
@@ -55,10 +58,10 @@ const carregarFabricantesCombustao = async () => {
 
 // carrega Modelos conforme a fabricante selecionada
 const carregarModelosPorFabricanteSelecionada = () => {
-    document.getElementById('fabricante').addEventListener('change', async (e) => {
+    document.getElementById('comboFabricante').addEventListener('change', async (e) => {
         const idFabricante = e.target.value;
-        const selectModelo = document.getElementById('modelo');
-        const selectAno = document.getElementById('anoFabricacao');
+        const selectModelo = document.getElementById('comboModelo');
+        const selectAno = document.getElementById('comboAnoFabricacao');
 
         // Reseta os combos filhos
         selectModelo.innerHTML = '<option value="" disabled selected>Modelo</option>';
@@ -83,9 +86,9 @@ const carregarModelosPorFabricanteSelecionada = () => {
 };
 
 const carregarAnosPorModeloSelecionado = () => {
-    document.getElementById('modelo').addEventListener('change', async (e) => {
+    document.getElementById('comboModelo').addEventListener('change', async (e) => {
         const modeloSelecionado = e.target.value;
-        const selectAno = document.getElementById('anoFabricacao');
+        const selectAno = document.getElementById('comboAnoFabricacao');
 
         selectAno.innerHTML = '<option value="" disabled selected>Ano</option>';
         selectAno.disabled = true;
@@ -109,14 +112,14 @@ const carregarAnosPorModeloSelecionado = () => {
 };
 
 window.novoCadastro = async () => {
-    let cpf = document.getElementById("cpf").value;
-    let nome = document.getElementById("nome").value;
-    let uf = document.getElementById("uf").value;
-    let rodagem = document.getElementById("rodagemMensal").value;
-    let modelo = document.getElementById("modelo").value;
-    let ano = document.getElementById("anoFabricacao").value;
+    let cpf = document.getElementById('inputCpf').value;
+    let nome = document.getElementById('inputNome').value;
+    let uf = document.getElementById('comboUf').value;
+    let comboFabricante = document.getElementById('comboFabricante');
+    let modelo = document.getElementById('comboModelo').value;
+    let ano = document.getElementById('comboAnoFabricacao').value;
+    let rodagem = document.getElementById('inputRodagemMensal').value;
 
-    let comboFabricante = document.getElementById("fabricante");
     let idFabricante = comboFabricante.value;
 
     if (!cpf.trim() || !nome.trim() || !uf || !idFabricante || !modelo || !ano || !rodagem) {
@@ -132,29 +135,28 @@ window.novoCadastro = async () => {
         return;
     }
 
-    alert("Cadastro e vínculo realizados com sucesso!");
+    alert("Cadastro realizado com sucesso!");
 
     const data = await response.json();
 
-    populaTelaWith(data);
-    ativaBotaoResultado(cpf);
+    await buscarUsuarioEPopularTela(cpf);
 };
 
 window.alterarCadastro = async () => {
-    let id_usuario = document.getElementById("resId").innerText;
+    let id_usuario = document.getElementById('resId').innerText;
     if (!id_usuario || id_usuario === "-") {
         alert("Nenhum usuário selecionado para alteração.");
         return;
     }
-    let cpf = document.getElementById("cpf").value;
-    let nome = document.getElementById("nome").value;
-    let uf = document.getElementById("uf").value;
-    let rodagem = document.getElementById("rodagemMensal").value;
-    let modelo = document.getElementById("modelo").value;
-    let ano = document.getElementById("anoFabricacao").value;
+    let cpf = document.getElementById('inputCpf').value;
+    let nome = document.getElementById('inputNome').value;
+    let uf = document.getElementById('comboUf').value;
+    let comboFabricante = document.getElementById('comboFabricante');
+    let modelo = document.getElementById('comboModelo').value;
+    let ano = document.getElementById('comboAnoFabricacao').value;
+    let rodagem = document.getElementById('inputRodagemMensal').value;
     let valorRevenda = Number.parseFloat(document.getElementById('resValorRevenda').innerText) || 0;
 
-    let comboFabricante = document.getElementById("fabricante");
     let idFabricante = comboFabricante.value; // Captura o ID numérico (ex: 2)
 
     if (!cpf.trim() || !nome.trim() || !uf || !idFabricante || !modelo || !ano || !rodagem) {
@@ -169,13 +171,13 @@ window.alterarCadastro = async () => {
         return;
     }
     const msg = await response.json();
-    alert("mensagem: " + msg.message);
-    
+    alert("Mensagem: " + msg.message);
+
     await buscarUsuarioEPopularTela(cpf);
 };
 
 window.novaConsulta = async () => {
-    let cpf = document.getElementById("cpf").value;
+    let cpf = document.getElementById('inputCpf').value;
     if (!cpf.trim()) {
         alert("Por favor, preencha o CPF para efetuar a consulta!");
         return;
@@ -201,7 +203,7 @@ const buscarUsuarioEPopularTela = async (cpf) => {
 };
 
 window.deleteCadastro = async () => {
-    let id_usuario = document.getElementById("resId").innerText;
+    let id_usuario = document.getElementById('resId').innerText;
     if (!id_usuario || id_usuario === "-") {
         alert("Nenhum usuário selecionado para exclusão.");
         return;
@@ -215,28 +217,28 @@ window.deleteCadastro = async () => {
     alert(data.message);
     limpaTela();
     limpaFormulario();
-    document.getElementById("deleteBtn").disabled = true;
+    document.getElementById('deleteBtn').disabled = true;
     desativaBotaoResultado();
 };
 
 const populaFormulario = async (data) => {
     try {
-        document.getElementById("cpf").value = data.cpf || "";
-        document.getElementById("nome").value = data.nome || "";
-        document.getElementById("uf").value = data.estado || "";
-        document.getElementById("rodagemMensal").value = data.veiculo.km_mensal || "";
+        document.getElementById('inputCpf').value = data.cpf || "";
+        document.getElementById('inputNome').value = data.nome || "";
+        document.getElementById('comboUf').value = data.estado || "";
+        document.getElementById('inputRodagemMensal').value = data.veiculo.km_mensal || "";
         //seleciona o fabricante do veículo no combo de fabricantes
-        const selectFabricante = document.getElementById("fabricante");
+        const selectFabricante = document.getElementById('comboFabricante');
         selectFabricante.value = data.veiculo.id_fabricante || "";
         selectFabricante.dispatchEvent(new Event('change'));//Dispara o evento de mudança para carregar os modelos correspondentes
         await new Promise(resolve => setTimeout(resolve, 300)); //aguarda o retorno
         //seleciona o modelo do veículo no combo de modelos
-        const selectModelo = document.getElementById("modelo");
+        const selectModelo = document.getElementById('comboModelo');
         selectModelo.value = data.veiculo.modelo || "";
         selectModelo.dispatchEvent(new Event('change'));//Dispara o evento de mudança para carregar os anos do modelo correspondente
         await new Promise(resolve => setTimeout(resolve, 300)); //aguarda o retorno
         //seleciona o ano do veículo no combo de anos
-        const selectAno = document.getElementById("anoFabricacao");
+        const selectAno = document.getElementById('comboAnoFabricacao');
         selectAno.value = Number.parseInt(data.veiculo.ano, 10) || "";
     } catch (error) {
         console.error("Erro ao popular o formulário:", error);
@@ -255,10 +257,10 @@ function populaTela(id_usuario, nome, estado, fabricante, modelo, ano, km_mensal
     document.getElementById('resModelo').innerText = modelo;
     document.getElementById('resAno').innerText = Number.parseInt(ano, 10);
     document.getElementById('resKm').innerText = Number.parseInt(km_mensal, 10);
-    document.getElementById('resValorRevenda').innerText = Number.parseFloat(valorRevenda || 0);
+    document.getElementById('resValorRevenda').innerText = formatCurrency(valorRevenda, 2);
 
-    document.getElementById("deleteBtn").disabled = false;
-    document.getElementById("alterarBtn").disabled = false;
+    document.getElementById('deleteBtn').disabled = false;
+    document.getElementById('alterarBtn').disabled = false;
 }
 
 function ativaBotaoResultado(cpf) {
@@ -279,6 +281,7 @@ function setBotaoResultado(cpf, ativar) {
 }
 
 const limpaTela = () => {
+    console.log("Limpando a tela...");
     document.getElementById('resId').innerText = "-";
     document.getElementById('resNome').innerText = "-";
     document.getElementById('resUf').innerText = "-";
@@ -286,25 +289,29 @@ const limpaTela = () => {
     document.getElementById('resModelo').innerText = "-";
     document.getElementById('resAno').innerText = "-";
     document.getElementById('resKm').innerText = "-";
+    document.getElementById('resValorRevenda').innerText = "-";
 
-    document.getElementById("deleteBtn").disabled = true;
-    document.getElementById("alterarBtn").disabled = true;
+    document.getElementById('deleteBtn').disabled = true;
+    document.getElementById('alterarBtn').disabled = true;
 };
 
 window.limpaFormulario = () => {
-    document.getElementById("cpf").value = "";
-    document.getElementById("nome").value = "";
-    document.getElementById("uf").selectedIndex = 0;
-    document.getElementById("fabricante").selectedIndex = 0;
-    document.getElementById("modelo").innerHTML = '<option value="" disabled selected>Modelo</option>';
-    document.getElementById("modelo").disabled = true;
-    document.getElementById("anoFabricacao").innerHTML = '<option value="" disabled selected>Ano</option>';
-    document.getElementById("anoFabricacao").disabled = true;
-    document.getElementById("rodagemMensal").value = "";
+    console.log("Limpando o formulário...");
+    document.getElementById('inputCpf').value = "";
+    document.getElementById('inputNome').value = "";
+    document.getElementById('comboUf').selectedIndex = 0;
+    document.getElementById('comboFabricante').selectedIndex = 0;
+    document.getElementById('comboModelo').innerHTML = '<option value="" disabled selected>Modelo</option>';
+    document.getElementById('comboModelo').disabled = true;
+    document.getElementById('comboAnoFabricacao').innerHTML = '<option value="" disabled selected>Ano</option>';
+    document.getElementById('comboAnoFabricacao').disabled = true;
+    document.getElementById('inputRodagemMensal').value = "";
 
-    document.getElementById("deleteBtn").disabled = true;
-    document.getElementById("alterarBtn").disabled = true;
+    document.getElementById('deleteBtn').disabled = true;
+    document.getElementById('alterarBtn').disabled = true;
     desativaBotaoResultado();
+
+    limpaTela();
 };
 
 window.irParaResultados = async () => {

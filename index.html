@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Petrowatt</title>
+    <title>Petrowatt - Cadastro</title>
 </head>
 
 <body>
@@ -21,37 +21,37 @@
         <h2>Cadastro inicial</h2>
 
         <div class="linha">
-            <input class="campo-md" type="text" id="cpf" placeholder="CPF" pattern="\d*"
-                maxlength="11"><!--apenas números-->
-            <input class="campo-largo" type="text" id="nome" placeholder="Nome completo" maxlength="50">
-            <select id="uf">
+            <input class="campo-md" type="text" id="inputCpf" placeholder="CPF" pattern="\d*" maxlength="11">
+            <input class="campo-largo" type="text" id="inputNome" placeholder="Nome completo" maxlength="50">
+            <select id="comboUf">
                 <option class="campo-pp" value="" disabled selected>UF</option>
             </select>
         </div>
         <div class="linha">
             <h4>Carro (à combustão):</h4>
         </div>
-        <div class="linha">
 
-            <select class="campo-md" id="fabricante">
+        <div class="linha">
+            <select class="campo-md" id="comboFabricante">
                 <option value="" disabled selected>Fabricante</option>
             </select>
-            <select class="campo-md" id="modelo" disabled>
+            <select class="campo-md" id="comboModelo" disabled>
                 <option value="" disabled selected>Modelo</option>
             </select>
-            <select class="campo-md" id="anoFabricacao" disabled>
+            <select class="campo-md" id="comboAnoFabricacao" disabled>
                 <option value="" disabled selected>Ano</option>
             </select>
-            <input class="campo-p" type="number" id="rodagemMensal" placeholder="Km mensal">
+            <input class="campo-p" type="number" id="inputRodagemMensal" placeholder="Km mensal">
         </div>
+
         <div class="linha">
             <button onclick="novoCadastro()" class="addBtn">Cadastrar</button>
             <button onclick="novaConsulta()" class="addBtn">Buscar</button>
             <button id="alterarBtn" onclick="alterarCadastro()" class="alterBtn" disabled>Alterar</button>
-            <button onclick="limpaFormulario()" class="addBtn">Limpar campos</button>
-            <button id="irParaResultadoBtn" onclick="irParaResultados()" class="addBtn" disabled
-                style="background-color: #28a745;">Ver Comparativo</button>
+            <button onclick="limpaFormulario()" class="addBtn">Limpar Campos</button>
+            <button id="irParaResultadoBtn" onclick="irParaResultados()" class="addBtn" disabled>Comparativo</button>
         </div>
+
     </section>
 
     <section class="errors">
@@ -64,17 +64,20 @@
             <p><strong>Id:</strong> <span id="resId">-</span></p>
             <p><strong>Nome:</strong> <span id="resNome">-</span></p>
             <p><strong>UF:</strong> <span id="resUf">-</span></p>
-
+            <br />
             <h3>Dados do Veículo</h3>
             <p><strong>Fabricante:</strong> <span id="resFabricante">-</span></p>
             <p><strong>Modelo:</strong> <span id="resModelo">-</span></p>
             <p><strong>Ano:</strong> <span id="resAno">-</span></p>
             <p><strong>Rodagem Mensal:</strong> <span id="resKm">-</span> km</p>
-            <p><strong>Valor de Revenda:</strong> R$ <span id="resValorRevenda">-</span></p>
+            <p><strong>Valor de Revenda:</strong> <span id="resValorRevenda">-</span></p>
+            <br />
         </div>
+
         <div class="linha">
             <button id="deleteBtn" onclick="deleteCadastro()" class="delBtn" disabled>Exclusão</button>
         </div>
+
     </section>
 
     <script type="module" src="./js/index.js"></script>

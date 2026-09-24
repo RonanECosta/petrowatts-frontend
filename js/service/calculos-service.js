@@ -1,6 +1,7 @@
-const calcularCustoTroca = (evEletrico, combustaoValorRevenda) => {
+const calcularCustoTroca = (evEletrico, combustaoValorRevenda, necessitaInfra) => {
     console.log("Calculando custo de troca: EV =", evEletrico, "Combustão valor revenda =", combustaoValorRevenda);
-    const custoTroca = evEletrico - combustaoValorRevenda;
+    const custoInfra = necessitaInfra ? 10000 : 0; // Exemplo de custo de infraestrutura
+    const custoTroca = evEletrico - combustaoValorRevenda + custoInfra;
     console.log("Custo de troca calculado:", custoTroca);
     return custoTroca;
 };

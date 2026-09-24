@@ -40,26 +40,39 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto 30px auto;
-    background: linear-gradient(135deg, var(--branco) 0%, #f1f8e9 100%);
-    padding: 20px 30px;
-    border-radius: 12px;
+    background: linear-gradient(135deg, var(--branco) 0%, #edfadf 100%);
+    padding: 10px 30px;
+    border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border-left: 6px solid var(--verde-destaque);
+    border-left: 5px solid var(--verde-destaque);
 }
 
-header .title h3 {
+header .title h2 {
     color: var(--verde-escuro);
+}
+
+header .usuario-info {
+    color: var(--verde-escuro);
+    font-weight: bold;
+    font-size: small;
+}
+
+header .usuario-cpf {
+    color: var(--verde-escuro);
+    font-weight: italic;
+    font-size: small;
 }
 
 header .icon img {
     height: 60px;
     width: auto;
+    align-self: flex-end;
 }
 
 .cadastro {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto 20px auto;
     background-color: var(--branco);
     padding: 25px;
@@ -181,7 +194,7 @@ header .icon img {
 }
 
 .errors {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto 20px auto;
 }
 
@@ -198,7 +211,7 @@ header .icon img {
 }
 
 .dados {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 10px 11px;
     background-color: var(--branco);
@@ -237,7 +250,7 @@ input::-webkit-inner-spin-button {
     max-width: 900px;
     margin: 0 auto 20px auto;
     background-color: var(--branco);
-    padding: 25px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
@@ -253,17 +266,18 @@ input::-webkit-inner-spin-button {
 /* Grid de Miniaturas de Carros Elétricos */
 .grid-miniaturas {
     display: flex;
-    gap: 15px;
+    gap: 10px;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .miniatura-card {
     background-color: var(--verde-claro);
     border: 2px solid var(--borda);
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     width: 160px;
+    height: 160px;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -271,15 +285,16 @@ input::-webkit-inner-spin-button {
 
 .miniatura-card:hover {
     border-color: var(--verde-destaque);
-    transform: translateY(-3px);
+    transform: scale(1.05) translateY(-4px);
     box-shadow: 0 4px 10px rgba(46, 125, 50, 0.15);
 }
 
 .miniatura-card img {
     max-width: 100%;
+    border-radius: 4px;
     height: 70px;
     object-fit: contain;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .miniatura-card h4 {
@@ -318,6 +333,13 @@ input::-webkit-inner-spin-button {
     font-size: 0.95rem;
 }
 
+.nota-observacao {
+    font-size: 0.85rem !important;
+    font-style: italic !important;
+    color: var(--texto-escuro);
+    margin-top: 10px;
+}
+
 /* Barrinhas ilustrativas */
 .barra-ilustrativa-container {
     background-color: var(--cinza-desativado);
@@ -325,6 +347,7 @@ input::-webkit-inner-spin-button {
     height: 8px;
     width: 100%;
     margin-top: 4px;
+    margin-bottom: 12px;
     overflow: hidden;
 }
 

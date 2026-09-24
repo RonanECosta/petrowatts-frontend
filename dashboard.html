@@ -3,19 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Petrowatt - Comparativo e Dashboard</title>
     <link rel="stylesheet" href="css/styles.css">
-    <title>Petrowatt</title>
+    <title>Petrowatt - Comparativo e Dashboard</title>
 </head>
 
 <body>
-    <!-- Cabeçalho -->
     <header>
-        <div class="logo-titulo">
-            <h2>Petrowatt - Dashboard de Eletrificação</h2>
+        <div class="title">
+            <h2>Dashboard comparativo</h2>
+            <span class="usuario-info">Usuário (CPF):</span>
+            <span class="usuario-cpf" id="dashCpf"> -</span>
         </div>
-        <div class="usuario-info">
-            <p><strong>Usuário (CPF):</strong> <span id="dashCpf">-</span></p>
+        <div class="icon">
+            <img src="./assets/img/favicon.ico" alt="icon">
         </div>
     </header>
 
@@ -25,7 +25,7 @@
         <div id="listaMiniaturasEletricos" class="grid-miniaturas">
             <!-- As miniaturas dos carros elétricos serão injetadas via JS -->
             <div class="miniatura-card" data-id="1">
-                <img src="./assets/img/na.png" alt="Carro Elétrico">
+                <img class="miniatura-img" src="./assets/img/na.png" alt="Carro Elétrico">
                 <h4>Modelo Elétrico Exemplo</h4>
             </div>
         </div>
@@ -36,27 +36,42 @@
         <h3>Detalhes do Elétrico Selecionado</h3>
         <div class="card-eletrico-detalhe">
             <div class="eletrico-imagem">
-                <img id="elFoto" src="./assets/img/na.png" alt="Foto do Elétrico">
+                <img id="evFoto" src="./assets/img/na.png" alt="Foto do Elétrico">
             </div>
             <div class="eletrico-pontuacoes">
-                <p><strong>Conforto:</strong>
-                <div id="elConfortoBar" class="barra-ilustrativa"></div>
-                </p>
-                <p><strong>Potência:</strong>
-                <div id="elPotenciaBar" class="barra-ilustrativa"></div>
-                </p>
-                <p><strong>Custo-Benefício:</strong>
-                <div id="elCustoBar" class="barra-ilustrativa"></div>
-                </p>
-                <p><strong>Autonomia:</strong>
-                <div id="elAutonomiaBar" class="barra-ilustrativa"></div>
-                </p>
+                <div>
+                    <strong>Conforto:</strong>
+                    <div class="barra-ilustrativa-container">
+                        <div id="evConfortoBar" class="barra-ilustrativa"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <strong>Potência:</strong>
+                    <div class="barra-ilustrativa-container">
+                        <div id="evPotenciaBar" class="barra-ilustrativa"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <strong>Custo-Benefício:</strong>
+                    <div class="barra-ilustrativa-container">
+                        <div id="evCustoBar" class="barra-ilustrativa"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <strong>Autonomia:</strong>
+                    <div class="barra-ilustrativa-container">
+                        <div id="evAutonomiaBar" class="barra-ilustrativa"></div>
+                    </div>
+                </div>
             </div>
             <div class="eletrico-dados-numericos">
-                <p><strong>Preço:</strong> R$ <span id="elPreco">-</span></p>
-                <p><strong>Potência Real:</strong> <span id="elPotenciaNum">-</span> cv</p>
-                <p><strong>Autonomia Real:</strong> <span id="elAutonomiaNum">-</span> km</p>
-                <p><strong>Acessórios:</strong> <span id="elAcessorios">-</span></p>
+                <p><strong>Preço:</strong> <span id="evPreco">-</span></p>
+                <p><strong>Potência Real:</strong> <span id="evPotenciaNum">-</span> cv</p>
+                <p><strong>Autonomia Real:</strong> <span id="evAutonomiaNum">-</span> km</p>
+                <p><strong>Acessórios:</strong> <span id="evAcessorios">-</span></p>
             </div>
         </div>
     </section>
@@ -78,14 +93,15 @@
             <!-- Dados Calculados / Retornados pelo Backend -->
             <div class="card-resultados-financeiros">
                 <h4>Viabilidade Financeira</h4>
-                <p><strong>Custo Inicial Necessário (Troca):</strong> <span id="resCustoTroca">-</span></p>
-                <p><strong>Custo Mensal do Veículo a Combustão:</strong> <span id="resCustoMensalCombustao">-</span></p>
-                <p><strong>Custo Mensal do Veículo Elétrico:</strong> <span id="resCustoMensalEletrico">-</span></p>
+                <p><strong>Custo Inicial:</strong> <span id="resCustoTroca">-</span></p>
+                <p><strong>Custo Mensal Veículo atual:</strong> <span id="resCustoMensalCombustao">-</span></p>
+                <p><strong>Custo Mensal EV:</strong> <span id="resCustoMensalEletrico">-</span></p>
                 <p><strong>Economia Mensal Estimada:</strong> <span id="resEconomiaMensal">-</span></p>
-                <p><strong>Tempo para o Veículo se Pagar (Payback):</strong> <span id="resPayback">-</span> meses</p>
-                <p><strong>Tarifa Aplicada por Kwh (UF):</strong> <span id="resTarifaKwh">-</span> por kWh</p>
+                <p><strong>Tempo de Payback:</strong> <span id="resPayback">-</span> meses</p>
+                <p><strong>Tarifa Aplicada Kwh (UF):</strong> <span id="resTarifaKwh">-</span> por kWh</p>
                 <p><strong>Valor por L (Gasolina, UF):</strong> <span id="resTarifaCombustivel">-</span> por litro</p>
 
+                <p id="evObservacao" class="nota-observacao"></p>
             </div>
         </div>
     </section>
