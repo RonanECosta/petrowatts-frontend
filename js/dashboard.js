@@ -1,12 +1,12 @@
 import { buscarUsuarioComVeiculoJson } from './service/usuario-service.js';
-import { listarVeiculosEletricos } from './service/veiculo-service.js';
+import { listarVeiculosEletricos, obterAcessoriosEV } from './service/veiculo-service.js';
 import { buscarTarifaEnergiaUf } from './service/tarifa-service.js';
 import { buscarPrecoCombustivelUf } from './service/combustivel-service.js';
 import { getImagemSrcFrom } from './utils/image-helper.js';
 import { calcularCustoMensalCombustao, calcularCustoMensalEletrico } from './utils/consumo-helper.js';
 import { calcularCustoTroca, calcularMesesPayback } from './service/calculos-service.js';
+import { calcularPontuacaoConforto, calcularPontuacaoAutonomia, calcularPontuacaoPotencia, calcularPontuacaoPreco, calcularPontuacaoCustoBeneficio } from './utils/pontuacao-helper.js';
 import { formatCurrency } from './utils/formatter.js';
-
 
 let dadosUsuarioGlobal = null;
 let carroEletricoSelecionado = null;
@@ -77,7 +77,7 @@ const carregarCatalogoEletricos = async () => {
 };
 
 // Ação ao clicar em uma miniatura de elétrico
-const selecionarCarroEletrico = (ev) => {
+const selecionarCarroEletrico = async (ev) => {
     carroEletricoSelecionado = ev;
 
     const imagemSrc = getImagemSrcFrom(ev);
@@ -87,41 +87,55 @@ const selecionarCarroEletrico = (ev) => {
 
     // Seção de destaque
     document.getElementById('evFoto').src = imagemSrc;
+    document.getElementById('evModeloSelecionado').innerText = ev.modelo;
     document.getElementById('evPreco').innerText = formatCurrency(preco);
     document.getElementById('evPotenciaNum').innerText = potencia;
     document.getElementById('evAutonomiaNum').innerText = autonomia;
 
-    // Acessórios / Infraestrutura
-    if (document.getElementById('evAcessorios')) {
-        document.getElementById('evAcessorios').innerText = ev.necessario_infra
-            ? "Requer infraestrutura de carregamento dedicada*"
-            : "Carregamento padrão compatível";
+    // Infraestrutura
+    document.getElementById('evInfra').innerText = ev.necessario_infra
+        ? "Requer rede dedicada *"
+        : "Não requer adaptações";
+
+    // Acessórios
+    const acessorios = await obterAcessoriosEV(ev);
+    console.log("Acessórios obtidos do EV:", acessorios);
+    if (acessorios.length > 0) {
+        document.getElementById('evAcessorios').innerText = "";
+        for (const acessorio of acessorios) {
+            const p = document.createElement('p');
+            p.innerText = '- ' + acessorio.nome + `: ${acessorio.valor_tamanho}`;
+            document.getElementById('evAcessorios').appendChild(p);
+        }
+    } else {
+        document.getElementById('evAcessorios').innerText = "-";
     }
 
+    // observação sobre infraestrutura
     document.getElementById('evObservacao').innerText = ev.necessario_infra ? "*Custo da infraestrutura varia conforme a potência, rede elétrica existente, entre outros fatores. Consideramos aprox. R$10mil" : "";
 
     // Barras ilustrativas
     const barPotencia = document.getElementById('evPotenciaBar');
-    const barAutonomia = document.getElementById('evAutonomiaBar');
     const barConforto = document.getElementById('evConfortoBar');
-    const barCustoBeneficio = document.getElementById('evCustoBeneficioBar');
-    const barAutonomiaContainer = document.getElementById('evAutonomiaBarContainer');
+    const barAutonomia = document.getElementById('evAutonomiaBar');
+    const barPreco = document.getElementById('evPrecoBar');
+    const barCustoBeneficio = document.getElementById('evCustoBar');
 
-    
+    const pctPreco = calcularPontuacaoPreco(preco);
+    barPreco.style.width = `${pctPreco}%`;
 
-    if (barPotencia) {
-        console.log("Calculando barra de potencia para:", potencia);
-        // Calcula a porcentagem com base no teto de 300 cv (normalizado de 0 a 100%)
-        const pctPotencia = Math.min(Math.max((potencia / 300) * 100, 0), 100);
-        barPotencia.style.width = `${pctPotencia}%`;
-    }
 
-    if (barAutonomia) {
-        console.log("Calculando barra de autonomia para:", autonomia);
-        // Calcula a porcentagem com base no teto de 600 km (normalizado de 0 a 100%)
-        const pctAutonomia = Math.min(Math.max((autonomia / 600) * 100, 0), 100);
-        barAutonomia.style.width = `${pctAutonomia}%`;
-    }
+    const pctConforto = calcularPontuacaoConforto(acessorios);
+    barConforto.style.width = `${pctConforto}%`;
+
+    const pctAutonomia = calcularPontuacaoAutonomia(autonomia);
+    barAutonomia.style.width = `${pctAutonomia}%`;
+
+    const pctPotencia = calcularPontuacaoPotencia(potencia);
+    barPotencia.style.width = `${pctPotencia}%`;
+
+    const pctCustoBeneficio = calcularPontuacaoCustoBeneficio(pctPreco, pctConforto, pctAutonomia, pctPotencia);
+    barCustoBeneficio.style.width = `${pctCustoBeneficio}%`;
 
     // Dispara o cálculo financeiro comparativo
     calcularComparativoFinanceiro(ev);

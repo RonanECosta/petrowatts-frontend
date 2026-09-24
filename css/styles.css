@@ -329,8 +329,15 @@ input::-webkit-inner-spin-button {
 .eletrico-dados-numericos p,
 .card-veiculo-atual p,
 .card-resultados-financeiros p {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-size: 0.95rem;
+}
+
+.eletrico-acessorios p {
+    font-size: small;
+    color: var(--texto-escuro);
+    font-style: italic;
+    margin-bottom: 2px;
 }
 
 .nota-observacao {

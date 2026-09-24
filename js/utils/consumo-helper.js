@@ -1,8 +1,9 @@
 export const calcularCustoMensalCombustao = async (rodagemKm, consumoKmL, valorL) => {
-    console.log("Calculando custo mensal de combustão:");
-    console.log("Rodagem (km):", rodagemKm);
-    console.log("Consumo (km/L):", consumoKmL);
-    console.log("Valor do combustível:", valorL);
+    console.log("Calculando custo mensal de combustão:-> ",
+        " Rodagem (km):", rodagemKm,
+        " Consumo (km/L):", consumoKmL,
+        " Valor do combustível:", valorL
+    );
 
     const consumoEmLitros = rodagemKm / consumoKmL;
     const custoMensal = consumoEmLitros * valorL;
@@ -13,10 +14,11 @@ export const calcularCustoMensalCombustao = async (rodagemKm, consumoKmL, valorL
 };
 
 export const calcularCustoMensalEletrico = async (rodagemKm, consumoMjKm, valorKwh) => {
-    console.log("Calculando custo mensal de elétrico:");
-    console.log("Rodagem (km):", rodagemKm);
-    console.log("Consumo (km/kWh):", consumoMjKm);
-    console.log("Valor da eletricidade:", valorKwh);
+    console.log("Calculando custo mensal de elétrico->",
+        " Rodagem (km):", rodagemKm,
+        " Consumo (km/kWh):", consumoMjKm,
+        " Valor da eletricidade:", valorKwh
+    );
 
     const consumoEmKWhKm = consumoMjKm / 3.6;
     const custoMensal = consumoEmKWhKm * rodagemKm * valorKwh;

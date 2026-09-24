@@ -37,12 +37,27 @@
         <div class="card-eletrico-detalhe">
             <div class="eletrico-imagem">
                 <img id="evFoto" src="./assets/img/na.png" alt="Foto do Elétrico">
+                <p id="evModeloSelecionado"></p>
             </div>
             <div class="eletrico-pontuacoes">
+                <div>
+                    <strong>Preço:</strong>
+                    <div class="barra-ilustrativa-container">
+                        <div id="evPrecoBar" class="barra-ilustrativa"></div>
+                    </div>
+                </div>
+
                 <div>
                     <strong>Conforto:</strong>
                     <div class="barra-ilustrativa-container">
                         <div id="evConfortoBar" class="barra-ilustrativa"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <strong>Autonomia:</strong>
+                    <div class="barra-ilustrativa-container">
+                        <div id="evAutonomiaBar" class="barra-ilustrativa"></div>
                     </div>
                 </div>
 
@@ -59,19 +74,17 @@
                         <div id="evCustoBar" class="barra-ilustrativa"></div>
                     </div>
                 </div>
-
-                <div>
-                    <strong>Autonomia:</strong>
-                    <div class="barra-ilustrativa-container">
-                        <div id="evAutonomiaBar" class="barra-ilustrativa"></div>
-                    </div>
-                </div>
             </div>
             <div class="eletrico-dados-numericos">
+                <p><h4>Dados Técnicos:</h4></p>
                 <p><strong>Preço:</strong> <span id="evPreco">-</span></p>
-                <p><strong>Potência Real:</strong> <span id="evPotenciaNum">-</span> cv</p>
-                <p><strong>Autonomia Real:</strong> <span id="evAutonomiaNum">-</span> km</p>
-                <p><strong>Acessórios:</strong> <span id="evAcessorios">-</span></p>
+                <p><strong>Potência:</strong> <span id="evPotenciaNum">-</span> cv</p>
+                <p><strong>Autonomia:</strong> <span id="evAutonomiaNum">-</span> km</p>
+                <p><strong>Infraestrutura:</strong> <span id="evInfra">-</span></p>
+                <p><strong>Acessórios:</strong></p>
+                <div class="eletrico-acessorios">
+                    <p><span id="evAcessorios">-</span></p>
+                </div>
             </div>
         </div>
     </section>
