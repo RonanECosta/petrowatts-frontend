@@ -22,14 +22,62 @@ Feito isso o usuário avança para uma página onde ele pode visualizar diferent
 
 ## Preparação do ambiente de execução
 
-Na primeira sprint bastava executar o index.html. Porém devido ao crescimento do projeto e adoção de modularização nos arquivos java script, NÃO é possível executar o arquivo diretamente. Faça isso para permitir a execução do frontend:
+Na primeira sprint bastava executar o index.html. Porém devido ao crescimento do projeto e adoção de modularização nos arquivos java script, NÃO é possível executar o arquivo diretamente.
+
+*Nota: Necessário que o docker esteja instalado na máquina.*
+
+### Executar o projeto completo
+
+1. Clone os repositórios referentes ao backend (`petrowatts`) e ao frontend (`petrowatts-frontend`), sendo de suma importância que a pasta raiz desses projetos estejam compartilhando o mesmo diretório da sua máquina, e estejam no mesmo nível diretorial
+
+    ```cmd
+    git clone <URL_DO_REPOSITORIO_PETROWATTS>
+    git clone <URL_DO_REPOSITORIO_PETROWATTS_FRONTEND>
+    ```
+
+2. Acesse o backend (`petrowatts`) e suba os containers preparados via docker compose, são eles: banco de dados MySQL, o servidor web Nginx e do backend API Python:
+
+    ```bash
+    cd petrowatts
+    docker compose up --build -d
+    ```
+
+    *Nota: Na primeira execução, o banco MySQL será criado e populado automaticamente com os dados de carga inicial.*
+
+3. Acesse a aplicação:
+
+   * Backend API / Documentação Interativa (Swagger): <http://localhost:5000/openapi>
+   * Aplicação Web: <http://localhost:8080>
+
+4. Para parar os containers:
+
+    ```bash
+    docker compose down
+    ```
+
+### Executar apenas o Frontend de forma isolada
+
+1. Abra um terminal na raiz do repositório frontend.
+2. Execute o comando:
+
+    ```bash
+    docker build -t petrowatts-frontend .
+    docker run -d -p 8080:80 --name petrowatts-frontend petrowatts-frontend
+    ```
+
+3. no navegador de sua preferência, acesse <http://localhost:8080>
+
+### Executar o frontend fora do docker
+
+Desde que sua máquina possua o python devidamente instalado, siga os seguintes passos:
 
 1. Abra um terminal
 2. Navegue até a pasta do projeto frontend
 3. Execute o comando:
-        ``` bash
-        python -m http.server 8080
-        ```
+
+    ``` bash
+    python -m http.server 8080
+    ```
 
 4. no navegador de sua preferência, acesse <http://127.0.0.1:8080/index.html>
 
