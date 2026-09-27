@@ -1,0 +1,41 @@
+services:
+
+  petrowatts-frontend:
+    build: ../petrowatts-frontend
+    container_name: petrowatts-frontend
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  petrowatts-db:
+    build: ../petrowatts/banco-dados
+    container_name: petrowatts-db
+    restart: unless-stopped
+    command: --ssl=off
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: petrowatts_db
+      MYSQL_USER: petrowatts_user
+      MYSQL_PASSWORD: petrowatts_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ../petrowatts/banco-dados/initdb:/docker-entrypoint-initdb.d # scripts SQL para rodar a carga inicial automaticamente
+      - ../petrowatts/banco-dados/initdb/img:/var/lib/mysql-files
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  petrowatts-api:
+    build: ../petrowatts
+    container_name: petrowatts-api
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=mysql+pymysql://petrowatts_user:petrowatts_password@petrowatts-db:3306/petrowatts_db?charset=utf8mb4
+    depends_on:
+      petrowatts-db:
+        condition: service_healthy  # A API só inicia após o MySQL passar no healthcheck
+    restart: unless-stopped

@@ -20,6 +20,10 @@ Feito isso o usuário avança para uma página onde ele pode visualizar diferent
 * **Backend:** Python, banco de dados MySQL, Docker
 * **Documentação:** Swagger para documentar as APIs
 
+#### Arquitetura do projeto
+
+![Arquitetura](arquitetura.drawio.svg)
+
 ## Preparação do ambiente de execução
 
 Na primeira sprint bastava executar o index.html. Porém devido ao crescimento do projeto e adoção de modularização nos arquivos java script, NÃO é possível executar o arquivo diretamente.
@@ -35,10 +39,10 @@ Na primeira sprint bastava executar o index.html. Porém devido ao crescimento d
     git clone <URL_DO_REPOSITORIO_PETROWATTS_FRONTEND>
     ```
 
-2. Acesse o backend (`petrowatts`) e suba os containers preparados via docker compose, são eles: banco de dados MySQL, o servidor web Nginx e do backend API Python:
+2. Acesse o frontend (`petrowatts-frontend`) e suba os containers preparados via docker compose, são eles: banco de dados MySQL, o servidor web Nginx e do backend API Python:
 
     ```bash
-    cd petrowatts
+    cd petrowatts-frontend
     docker compose up --build -d
     ```
 
